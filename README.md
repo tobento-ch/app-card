@@ -191,9 +191,6 @@ In your view file, use the render method to display the cards:
         <?= $view->render('inc/head') ?>
         <?= $view->assets()->render() ?>
         <?php
-        // you may add the card css, otherwise you need to write your custom css for your cards.
-        $view->asset('assets/card/card.css');
-        
         // add if you have or support filterable cards:
         $view->asset('assets/card/card.js')->attr('type', 'module');
         ?>
@@ -218,6 +215,8 @@ In your view file, use the render method to display the cards:
     </body>
 </html>
 ```
+
+Check out the [Cards - CSS basis](https://github.com/tobento-ch/css-basis#cards) to learn more about it.
 
 Check out the [App View](https://github.com/tobento-ch/app-view) to learn more about it.
 
