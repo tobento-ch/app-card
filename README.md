@@ -343,6 +343,7 @@ The ```Table``` card may be used to add items being displayed in a table:
 ```php
 use Tobento\App\Card\Card;
 use Tobento\App\Card\Renderable\Link;
+use Tobento\App\Card\Renderable\Links;
 use Tobento\Service\View\ViewInterface;
 
 $card = new Card\Table(
@@ -353,7 +354,13 @@ $card = new Card\Table(
     
     // Add table rows:
     rows: [
-        ['Desc', new Link(url: 'Url', label: 'Label', attributes: ['class' => 'button'])],
+        [
+            'Desc',
+            new Links(
+                new Link(url: '/edit', label: 'Edit', attributes: ['class' => 'button']),
+                new Link(url: '/view', label: 'View', attributes: ['class' => 'button']),
+            ),
+        ],
     ],
     
     // You may set a title:
