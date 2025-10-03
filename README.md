@@ -16,11 +16,13 @@ The card app provides interfaces to create cards to be displayed on a dashboard 
         - [Displaying Cards In Views](#displaying-cards-in-views)
         - [Creating Specific Cards](#creating-specific-cards)
     - [Available Cards](#available-cards)
+        - [Chart Card](#chart-card)
         - [Group Card](#group-card)
         - [Html Card](#html-card)
         - [KeyedList Card](#keyedlist-card)
         - [Table Card](#table-card)
     - [Available Card Factories](#available-card-factories)
+        - [Chart Card Factory](#chart-card-factory)
         - [Group Card Factory](#group-card-factory)
         - [Html Card Factory](#html-card-factory)
         - [KeyedList Card Factory](#keyedlist-card-factory)
@@ -39,7 +41,7 @@ composer require tobento/app-card
 
 ## Requirements
 
-- PHP 8.0 or greater
+- PHP 8.4 or greater
 
 # Documentation
 
@@ -62,7 +64,7 @@ use Tobento\App\Card\CardsInterface;
 use Tobento\App\Card\FilterInputInterface;
 
 // Create the app
-$app = (new AppFactory())->createApp();
+$app = new AppFactory()->createApp();
 
 // Add directories:
 $app->dirs()
@@ -251,6 +253,58 @@ $app->on(
 
 ## Available Cards
 
+### Chart Card
+
+The ```Chart``` card may be used to display charts using the [Maantje Charts](https://github.com/maantje/charts) library:
+
+```php
+use Maantje\Charts\Chart;
+use Maantje\Charts\Line\Line;
+use Maantje\Charts\Line\Lines;
+use Maantje\Charts\Line\Point;
+use Tobento\App\Card\Card;
+use Tobento\Service\View\ViewInterface;
+
+$card = new Card\Chart(
+    view: $view, // ViewInterface
+    
+    chart: new Chart(
+        series: [
+            new Lines(
+                lines: [
+                    new Line(
+                        points: [
+                            [0, 0],
+                            [100, 4],
+                            [200, 12],
+                            [300, 8],
+                        ]
+                    ),
+                    new Line(
+                        points: [
+                            new Point(x: 0, y: 4, color: 'red', size: 5),
+                            new Point(x: 100, y: 12, color: 'red', size: 5),
+                            new Point(x: 200, y: 24, color: 'red', size: 5),
+                            new Point(x: 300, y: 7, color: 'red', size: 5),
+                        ],
+                        color: 'blue'
+                    ),
+                ]
+            ),
+        ],
+    ),
+    
+    // You may set a title:
+    title: 'A title',
+    
+    // You may set a group to be later filtered:
+    group: 'main',
+    
+    // You may set a priority:
+    priority: 100,
+);
+```
+
 ### Group Card
 
 The ```Group``` card may be used to group cards being displayed in smaller sizes:
@@ -377,6 +431,66 @@ $card = new Card\Table(
 You may use the [Table Card Factory](#table-card-factory) to [add the card](#adding-cards).
 
 ## Available Card Factories
+
+### Chart Card Factory
+
+The ```Chart``` card factory creates a [Chart Card](#chart-card):
+
+```php
+use Maantje\Charts\Chart;
+use Maantje\Charts\Line\Line;
+use Maantje\Charts\Line\Lines;
+use Maantje\Charts\Line\Point;
+use Tobento\App\Card\Factory;
+
+$factory = new Factory\Chart(
+    chart: new Chart(
+        series: [
+            new Lines(
+                lines: [
+                    new Line(
+                        points: [
+                            [0, 0],
+                            [100, 4],
+                            [200, 12],
+                            [300, 8],
+                        ]
+                    ),
+                    new Line(
+                        points: [
+                            new Point(x: 0, y: 4, color: 'red', size: 5),
+                            new Point(x: 100, y: 12, color: 'red', size: 5),
+                            new Point(x: 200, y: 24, color: 'red', size: 5),
+                            new Point(x: 300, y: 7, color: 'red', size: 5),
+                        ],
+                        color: 'blue'
+                    ),
+                ]
+            ),
+        ],
+    ),
+    
+    // You may set a title:
+    title: 'A title',
+    
+    // You may set a group to be later filtered:
+    group: 'main',
+    
+    // You may set a priority:
+    priority: 100,
+);
+```
+
+**CSS**
+
+The following CSS is required to have responsive charts:
+
+```css
+.card-chart svg { 
+  width: 100%;
+  height: auto;
+}
+```
 
 ### Group Card Factory
 
@@ -592,3 +706,4 @@ This example uses [Form Service](https://github.com/tobento-ch/service-form) whi
 
 - [Tobias Strub](https://www.tobento.ch)
 - [All Contributors](../../contributors)
+- [Maantje Charts](https://github.com/maantje/charts)
