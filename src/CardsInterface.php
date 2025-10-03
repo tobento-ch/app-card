@@ -17,7 +17,7 @@ use IteratorAggregate;
 use Countable;
 
 /**
- * CardsInterface
+ * @extends IteratorAggregate<string, CardInterface>
  */
 interface CardsInterface extends IteratorAggregate, Countable
 {

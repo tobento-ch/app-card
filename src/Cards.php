@@ -210,7 +210,7 @@ class Cards implements CardsInterface
     /**
      * Get the iterator. 
      *
-     * @return Traversable
+     * @return Traversable<string, CardInterface>
      */
     public function getIterator(): Traversable
     {    
