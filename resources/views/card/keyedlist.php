@@ -12,9 +12,7 @@
             <?php if ($key) { ?>
                 <div><?= $key ?></div>
             <?php } ?>
-            <?php if ($value) { ?>
-                <div class="text-700 mt-xxs mb-s"><?= $value ?></div>
-            <?php } ?>
+            <div class="text-700 mt-xxs mb-s"><?= $value === '' ? '-' : $value ?></div>
         <?php } ?>
     </div>
 </div>
