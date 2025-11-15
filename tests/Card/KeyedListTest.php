@@ -61,4 +61,19 @@ class KeyedListTest extends TestCase
         $this->assertStringContainsString('bar', $html);
         $this->assertStringContainsString('Bar', $html);
     }
+    
+    public function testRenderMethodWithEmptyAndZeroValue()
+    {
+        $card = new Card\KeyedList(
+            view: Factory::createView(),
+            items: ['zero' => 0, 'empty' => ''],
+            title: 'Title',
+        );
+        
+        $html = $card->render();
+        $this->assertStringContainsString('zero', $html);
+        $this->assertStringContainsString('empty', $html);
+        $this->assertStringContainsString('0', $html);
+        $this->assertStringContainsString('-', $html);
+    }
 }
