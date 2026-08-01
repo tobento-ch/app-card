@@ -92,6 +92,31 @@ class CardsTest extends TestCase
         $this->assertSame(['foo'], $cards->names());
     }
     
+    public function testAddFromCardsMethod()
+    {
+        $cards = new Cards(container: ObjFactory::createContainer());
+        $this->assertFalse($cards->has('foo'));
+        $this->assertFalse($cards->has('bar'));
+        $this->assertSame([], $cards->names());
+
+        // Create another Cards instance with two cards
+        $otherCards = new Cards(container: ObjFactory::createContainer());
+        $otherCards->add('foo', new Card\NullCard());
+        $otherCards->add('bar', Card\NullCard::class);
+
+        // Merge cards
+        $cards->addFromCards($otherCards);
+
+        // Assertions
+        $this->assertTrue($cards->has('foo'));
+        $this->assertTrue($cards->has('bar'));
+
+        $this->assertInstanceOf(CardInterface::class, $cards->get('foo'));
+        $this->assertInstanceOf(CardInterface::class, $cards->get('bar'));
+
+        $this->assertSame(['foo', 'bar'], $cards->names());
+    }
+    
     public function testConstructCards()
     {
         $cards = new Cards(container: ObjFactory::createContainer(), cards: [
