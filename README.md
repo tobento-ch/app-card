@@ -12,6 +12,7 @@ The card app provides interfaces to create cards to be displayed on a dashboard 
         - [Card Config](#card-config)
     - [Cards](#cards)
         - [Adding Cards](#adding-cards)
+        - [Merging Cards](#merging-cards)
         - [Cards Methods](#cards-methods)
         - [Displaying Cards In Views](#displaying-cards-in-views)
         - [Creating Specific Cards](#creating-specific-cards)
@@ -134,6 +135,48 @@ $app->on(
 ```
 
 Check out the [Available Cards](#available-cards) or [Available Card Factories](#available-card-factories).
+
+### Merging Cards
+
+In addition to adding individual cards, you may also merge an existing cards collection into another one using `CardsInterface::addFromCards()`.  
+This is useful when a module provides its own set of cards (for example, log cards, user cards, or resource-specific cards) and you want to attach them to another cards collection only when needed.
+
+```php
+use Tobento\App\AppInterface;
+use Tobento\App\Card\Cards;
+use Tobento\App\Card\CardsInterface;
+
+$app->on(
+    CardsInterface::class,
+    static function(CardsInterface $cards, AppInterface $app): void {
+
+        // Create or fetch another cards collection:
+        $otherCards = new Cards(container: $app->container());
+
+        $otherCards->add('latest-logs', new LatestLogsCard(
+            logRepository: $app->container()->get(LogRepositoryInterface::class),
+            view: $app->container()->get(ViewInterface::class),
+        ));
+
+        // Merge all cards from the other collection:
+        $cards->addFromCards($otherCards);
+    }
+);
+```
+
+#### When to use `addFromCards()`
+
+- When a module defines its own card set and you want to attach it to another card collection.
+- When you want to keep card configuration isolated and reusable.
+- When multiple boot classes contribute cards to the same view.
+- When you want to conditionally add cards (e.g., ACL permissions, feature flags).
+
+#### Behavior
+
+- Cards are merged **by name**.
+- If a card with the same name already exists, it is **overwritten** (last-write-wins).
+- All card types are supported:  
+  `CardInterface`, `CardFactoryInterface`, callables, and class strings.
 
 ### Cards Methods
 
