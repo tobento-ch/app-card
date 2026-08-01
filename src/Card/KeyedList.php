@@ -17,6 +17,7 @@ use JsonException;
 use Stringable;
 use Tobento\App\Card\CardInterface;
 use Tobento\Service\Collection\Collection;
+use Tobento\Service\Support\Htmlable;
 use Tobento\Service\Support\Renderable;
 use Tobento\Service\Support\Str;
 use Tobento\Service\View\ViewInterface;
@@ -125,6 +126,10 @@ class KeyedList implements CardInterface
 
         if ($value instanceof CardInterface || $value instanceof Renderable) {
             return $value->render();
+        }
+        
+        if ($value instanceof Htmlable) {
+            return $value->toHtml();
         }
         
         if (is_string($value) || $value instanceof Stringable) {
