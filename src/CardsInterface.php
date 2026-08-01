@@ -27,8 +27,18 @@ interface CardsInterface extends IteratorAggregate, Countable
      * @param string $name Must be lowercase and contain only [a-z-] characters.
      * @param string|CardInterface|CardFactoryInterface|callable $card
      * @return static $this
+     * @psalm-suppress PossiblyUnusedReturnValue
      */
     public function add(string $name, string|CardInterface|CardFactoryInterface|callable $card): static;
+    
+    /**
+     * Add all cards from another CardsInterface.
+     *
+     * @param CardsInterface $cards
+     * @return static $this
+     * @psalm-suppress PossiblyUnusedReturnValue
+     */
+    public function addFromCards(CardsInterface $cards): static;
     
     /**
      * Returns true if card exists, otherwise false.

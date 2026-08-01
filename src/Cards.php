@@ -56,6 +56,21 @@ class Cards implements CardsInterface
     }
     
     /**
+     * Add all cards from another CardsInterface.
+     *
+     * @param CardsInterface $cards
+     * @return static $this
+     */
+    public function addFromCards(CardsInterface $cards): static
+    {
+        foreach($cards as $name => $card) {
+            $this->add(name: $name, card: $card);
+        }
+
+        return $this;
+    }
+    
+    /**
      * Returns true if card exists, otherwise false.
      *
      * @param string $name
