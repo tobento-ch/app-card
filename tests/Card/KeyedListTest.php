@@ -76,4 +76,144 @@ class KeyedListTest extends TestCase
         $this->assertStringContainsString('0', $html);
         $this->assertStringContainsString('-', $html);
     }
+
+    public function testRenderValueWithArray()
+    {
+        $card = new Card\KeyedList(
+            view: Factory::createView(),
+            items: ['foo' => ['a' => 'b']],
+        );
+
+        $html = preg_replace('/\s+/', '', $card->render());
+
+        // JSON pretty print is escaped
+        $this->assertStringContainsString('&quot;a&quot;:&quot;b&quot;', $html);
+    }
+    
+    public function testRenderValueWithCardInterface()
+    {
+        $innerCard = new Card\Html(
+            view: Factory::createView(),
+            html: '<span>Inner</span>',
+        );
+
+        $card = new Card\KeyedList(
+            view: Factory::createView(),
+            items: ['foo' => $innerCard],
+        );
+
+        $html = preg_replace('/\s+/', '', $card->render());
+
+        // Html card content must appear
+        $this->assertStringContainsString('<span>Inner</span>', $html);
+    }
+    
+    public function testRenderValueWithRenderable()
+    {
+        $renderable = new class implements \Tobento\Service\Support\Renderable {
+            public function render(): string
+            {
+                return '<b>R</b>';
+            }
+        };
+
+        $card = new Card\KeyedList(
+            view: Factory::createView(),
+            items: ['foo' => $renderable],
+        );
+
+        $html = preg_replace('/\s+/', '', $card->render());
+
+        $this->assertStringContainsString('<b>R</b>', $html);
+    }
+    
+    public function testRenderValueWithHtmlable()
+    {
+        $htmlable = new class implements \Tobento\Service\Support\Htmlable {
+            public function toHtml(): string
+            {
+                return '<strong>Bar</strong>';
+            }
+        };
+
+        $card = new Card\KeyedList(
+            view: Factory::createView(),
+            items: ['foo' => $htmlable],
+        );
+
+        $html = preg_replace('/\s+/', '', $card->render());
+
+        // Raw HTML, not escaped
+        $this->assertStringContainsString('<strong>Bar</strong>', $html);
+    }
+    
+    public function testRenderValueWithStringable()
+    {
+        $stringable = new class implements \Stringable {
+            public function __toString(): string
+            {
+                return '<x>';
+            }
+        };
+
+        $card = new Card\KeyedList(
+            view: Factory::createView(),
+            items: ['foo' => $stringable],
+        );
+
+        $html = preg_replace('/\s+/', '', $card->render());
+
+        // Escaped
+        $this->assertStringContainsString('&lt;x&gt;', $html);
+    }
+    
+    public function testRenderValueWithNumeric()
+    {
+        $card = new Card\KeyedList(
+            view: Factory::createView(),
+            items: ['foo' => 123],
+        );
+
+        $html = preg_replace('/\s+/', '', $card->render());
+
+        $this->assertStringContainsString('123', $html);
+    }
+    
+    public function testRenderValueWithBool()
+    {
+        $card = new Card\KeyedList(
+            view: Factory::createView(),
+            items: ['foo' => true],
+        );
+
+        $html = preg_replace('/\s+/', '', $card->render());
+
+        // true → "1"
+        $this->assertStringContainsString('1', $html);
+    }
+    
+    public function testRenderValueWithNull()
+    {
+        $card = new Card\KeyedList(
+            view: Factory::createView(),
+            items: ['foo' => null],
+        );
+
+        $html = preg_replace('/\s+/', '', $card->render());
+
+        $this->assertStringContainsString('null', $html);
+    }
+    
+    public function testRenderValueWithUnsupportedType()
+    {
+        $card = new Card\KeyedList(
+            view: Factory::createView(),
+            items: ['foo' => new \stdClass()],
+        );
+
+        $html = preg_replace('/\s+/', '', $card->render());
+
+        // Unsupported → empty string → KeyedList view renders "-" for empty values
+        $this->assertStringContainsString('<divclass="text-700mt-xxsmb-s">-</div>', $html);
+    }
 }
